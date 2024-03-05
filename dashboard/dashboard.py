@@ -5,7 +5,7 @@ import streamlit as st
 from babel.numbers import format_currency
 
 # Load Data
-bike_sharing = pd.read_csv("all_data.csv")
+bike_sharing = pd.read_csv("https://raw.githubusercontent.com/DANUFR17/CourseDicoding/main/dashboard/all_data.csv")
 
 # Sidebar
 with st.sidebar:
