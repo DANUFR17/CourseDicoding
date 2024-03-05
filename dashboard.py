@@ -5,7 +5,7 @@ import streamlit as st
 from babel.numbers import format_currency
 
 # Load Data
-all_df = pd.read_csv("all_data.csv")
+all_df = pd.read_csv("dashboard/all_data.csv")
 
 # Sidebar
 with st.sidebar:
@@ -14,67 +14,66 @@ with st.sidebar:
 
 
 # Title
-st.header("E-Commerce Dashboard :bike:")
+st.header("Dashboard :bike:")
 
-# 1. Tren Penggunaan Sepeda per Bulan
-st.subheader("Tren Penggunaan Sepeda per Bulan")
+# 1. Apakah ada korelasi antara musim dan jumlah sewa sepeda harian?
+st.subheader("Tren Penggunaan Sepeda per Musim")
 st.markdown("""
-Dari visualisasi tren penggunaan sepeda per bulan, terlihat bahwa penggunaan sepeda cenderung meningkat dari bulan-bulan awal tahun menuju puncaknya pada musim panas (biasanya bulan Juni hingga Agustus), kemudian mulai menurun menjelang akhir tahun. Ini menunjukkan bahwa cuaca dan musim memiliki pengaruh signifikan terhadap permintaan sepeda.
+Dari visualisasi tren penggunaan sepeda per Musim, terlihat bahwa penggunaan sepeda cenderung meningkat dari musim semi (biasanya bulan Maret hingga May), kemudian mulai menurun menjelang akhir tahun. Ini menunjukkan bahwa cuaca dan musim memiliki pengaruh signifikan terhadap permintaan sepeda.
 """)
 
 # Visualisasi
-fig, ax = plt.subplots(figsize=(10, 6))
-monthly_total = all_df.groupby('month')['cnt_x'].sum()  # Perbaikan di sini: cnt_x sesuai dengan nama kolom di all.csv
-monthly_total.plot(marker='o', color='b', ax=ax)
-ax.set_title('Total Penggunaan Sepeda per Bulan')
-ax.set_xlabel('Bulan')
-ax.set_ylabel('Total Penggunaan Sepeda')
-ax.set_xticks(monthly_total.index)
-ax.set_xticklabels(['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'], rotation=45)
-ax.grid(True)
+seasonal_data = bike_sharing.groupby('season_daily')['cnt_daily'].mean()
+season_names = ['Spring', 'Summer', 'Fall', 'Winter']
+plt.bar(season_names, seasonal_data)
+plt.xlabel('Musim')
+plt.ylabel('Rata-rata Jumlah Sewa Harian')
+plt.title('Pengaruh Musim Terhadap Jumlah Sewa Sepeda Harian')
+plt.show()
+st.pyplot(fig)
+
+
+# 2. Apakah ada pola berdasarkan waktu dalam jumlah sewa sepeda harian??
+st.subheader("Pola berdasarkan bulan")
+st.markdown("""
+Berdasarkan deskripsi yang Anda berikan, terdapat dua grafik yang menunjukkan pola waktu sewa sepeda. Waktu sewa lebih banyak terjadi pada bulan Juni dan September, sementara jumlah sewa sepeda meningkat sekitar jam 8 pagi dan sekitar jam 5 atau 6 sore.
+""")
+
+# Visualisasi
+# Pola berdasarkan bulan
+sns.set_style("whitegrid")
+plt.figure(figsize=(12, 6))
+sns.lineplot(x="mnth_daily", y="cnt_daily", data=bike_sharing, ci=None)
+plt.title("Pola Jumlah Sewa Sepeda Harian Berdasarkan Bulan")
+plt.xlabel("Bulan")
+plt.ylabel("Jumlah Sewa Sepeda Harian")
+plt.show()
+# Pola berdasarkan jam
+sns.set_style("whitegrid")
+plt.figure(figsize=(12, 6))
+sns.lineplot(x="hr", y="cnt_hourly", data=bike_sharing, ci=None)
+plt.title("Pola Jumlah Sewa Sepeda Harian Berdasarkan Jam")
+plt.xlabel("Jam")
+plt.ylabel("Jumlah Sewa Sepeda Harian")
+plt.show()
 st.pyplot(fig)
 
 
 
-
-
-# 2. Perbedaan Penggunaan Sepeda antara Hari Kerja dan Hari Libur
-st.subheader("Perbedaan Penggunaan Sepeda antara Hari Kerja dan Hari Libur")
+# 3. Bagaimana pengaruh cuaca terhadap jumlah sewa sepeda harian?
+st.subheader("Bagaimana pengaruh cuaca terhadap jumlah sewa sepeda harian?")
 
 st.markdown("""
-Berdasarkan perbandingan penggunaan sepeda antara hari kerja dan hari libur, terlihat bahwa penggunaan sepeda cenderung lebih tinggi pada hari kerja dibandingkan dengan hari libur. Hal ini mungkin disebabkan oleh kebutuhan transportasi sehari-hari ke tempat kerja. Informasi ini bisa menjadi pertimbangan dalam merencanakan promosi atau menyesuaikan layanan sesuai dengan pola penggunaan sepeda yang berbeda antara hari kerja dan hari libur.
+Dari visualisasi penggunaan jumlah sewa sepeda mengingkat ketika cuaca Cerah, Sedikit awan, Berawan sebagian, Berawan sebagian.
 """)
 
 # Visualisasi
-fig, ax = plt.subplots(figsize=(8, 6))
-sns.boxplot(x='workingday_y', y='cnt_x', data=all_df, ax=ax)  # Perbaikan di sini: cnt_x sesuai dengan nama kolom di all.csv
-ax.set_title('Perbandingan Penggunaan Sepeda antara Hari Kerja dan Hari Libur')
-ax.set_xlabel('Hari Kerja (0: Hari Libur, 1: Hari Kerja)')
-ax.set_ylabel('Total Penggunaan Sepeda')
-ax.set_xticks([0, 1])
-ax.set_xticklabels(['Hari Libur', 'Hari Kerja'])
-ax.grid(True)
-
-# Menampilkan visualisasi dengan st.pyplot(fig)
-st.pyplot(fig)
-
-
-
-# 3. Pengaruh Kondisi Cuaca terhadap Penggunaan Sepeda
-st.subheader("Pengaruh Kondisi Cuaca terhadap Penggunaan Sepeda")
-
-st.markdown("""
-Dari visualisasi penggunaan sepeda berdasarkan kondisi cuaca, terlihat bahwa kondisi cuaca yang lebih baik (weathersit=1) memiliki jumlah penggunaan sepeda yang lebih tinggi daripada kondisi cuaca yang buruk. Hal ini konsisten dengan asumsi bahwa cuaca yang cerah dan baik akan mendorong orang untuk menggunakan sepeda lebih banyak. Dapat disimpulkan bahwa cuaca, terutama faktor suhu dan kondisi cuaca umum, memiliki pengaruh yang signifikan terhadap permintaan sepeda. Informasi ini dapat digunakan untuk mengarahkan strategi pemasaran dan promosi, serta menyesuaikan layanan sesuai dengan kondisi cuaca yang sedang berlangsung.
-""")
-
-# Visualisasi
-fig, ax = plt.subplots(figsize=(10, 6))
-weather_condition = all_df.groupby('weathersit_x')['cnt_x'].sum()  # Perbaikan di sini: cnt_x sesuai dengan nama kolom di all.csv
-weather_condition.plot(kind='bar', color='skyblue')
-plt.title('Penggunaan Sepeda berdasarkan Kondisi Cuaca')
-plt.xlabel('Kondisi Cuaca')
-plt.ylabel('Total Penggunaan Sepeda')
-plt.xticks(rotation=0)
+plt.figure(figsize=(10, 6))
+sns.boxplot(x="weathersit_daily", y="cnt_daily", data=bike_sharing)
+plt.title("Pengaruh Weathersit Terhadap Jumlah Sewa Sepeda Harian")
+plt.xlabel("Weathersit")
+plt.ylabel("Jumlah Sewa Sepeda Harian")
+plt.show()
 plt.grid(axis='y')
 
 # Menambahkan keterangan di bawah setiap batang
@@ -84,5 +83,24 @@ for i, val in enumerate(weather_condition.values):
 # Menyimpan gambar Matplotlib ke dalam variabel fig
 st.pyplot(fig)
 
-# Copyright
-st.caption('Copyright (C) Alif Suryadi 2024')
+
+
+
+# 4. Apakah ada perbedaan antara hari kerja dan hari libur dalam jumlah sewa sepeda harian?
+st.subheader("Perbedaan Penggunaan Sepeda antara Hari Kerja dan Hari Libur")
+
+st.markdown("""
+Berdasarkan perbandingan Ada perbedaan jumlah sewa sepeda lebih banyak ketika hari kerja daipada hari libur.
+""")
+
+# Visualisasi
+plt.figure(figsize=(8, 5))
+sns.boxplot(x="workingday_daily", y="cnt_daily", data=bike_sharing)
+plt.title("Perbedaan Antara Hari Kerja dan Hari Libur dalam Jumlah Sewa Sepeda Harian")
+plt.xlabel("Workingday")
+plt.ylabel("Jumlah Sewa Sepeda Harian")
+plt.show()
+
+# Menampilkan visualisasi dengan st.pyplot(fig)
+st.pyplot(fig)
+
