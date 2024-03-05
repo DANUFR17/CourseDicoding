@@ -5,7 +5,7 @@ import streamlit as st
 from babel.numbers import format_currency
 
 # Load Data
-all_df = pd.read_csv("dashboard/all_data.csv")
+bike_sharing = pd.read_csv("dashboard/all_data.csv")
 
 # Sidebar
 with st.sidebar:
@@ -29,8 +29,7 @@ plt.bar(season_names, seasonal_data)
 plt.xlabel('Musim')
 plt.ylabel('Rata-rata Jumlah Sewa Harian')
 plt.title('Pengaruh Musim Terhadap Jumlah Sewa Sepeda Harian')
-plt.show()
-st.pyplot(fig)
+st.pyplot()
 
 
 # 2. Apakah ada pola berdasarkan waktu dalam jumlah sewa sepeda harian??
@@ -47,7 +46,7 @@ sns.lineplot(x="mnth_daily", y="cnt_daily", data=bike_sharing, ci=None)
 plt.title("Pola Jumlah Sewa Sepeda Harian Berdasarkan Bulan")
 plt.xlabel("Bulan")
 plt.ylabel("Jumlah Sewa Sepeda Harian")
-plt.show()
+
 # Pola berdasarkan jam
 sns.set_style("whitegrid")
 plt.figure(figsize=(12, 6))
@@ -55,8 +54,8 @@ sns.lineplot(x="hr", y="cnt_hourly", data=bike_sharing, ci=None)
 plt.title("Pola Jumlah Sewa Sepeda Harian Berdasarkan Jam")
 plt.xlabel("Jam")
 plt.ylabel("Jumlah Sewa Sepeda Harian")
-plt.show()
-st.pyplot(fig)
+
+st.pyplot()
 
 
 
@@ -73,15 +72,12 @@ sns.boxplot(x="weathersit_daily", y="cnt_daily", data=bike_sharing)
 plt.title("Pengaruh Weathersit Terhadap Jumlah Sewa Sepeda Harian")
 plt.xlabel("Weathersit")
 plt.ylabel("Jumlah Sewa Sepeda Harian")
-plt.show()
+
 plt.grid(axis='y')
 
-# Menambahkan keterangan di bawah setiap batang
-for i, val in enumerate(weather_condition.values):
-    ax.text(i, val + 20, str(val), ha='center', va='bottom')
     
 # Menyimpan gambar Matplotlib ke dalam variabel fig
-st.pyplot(fig)
+st.pyplot()
 
 
 
@@ -99,8 +95,8 @@ sns.boxplot(x="workingday_daily", y="cnt_daily", data=bike_sharing)
 plt.title("Perbedaan Antara Hari Kerja dan Hari Libur dalam Jumlah Sewa Sepeda Harian")
 plt.xlabel("Workingday")
 plt.ylabel("Jumlah Sewa Sepeda Harian")
-plt.show()
+
 
 # Menampilkan visualisasi dengan st.pyplot(fig)
-st.pyplot(fig)
+st.pyplot()
 
