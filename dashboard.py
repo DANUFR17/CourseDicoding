@@ -75,9 +75,6 @@ plt.ylabel("Jumlah Sewa Sepeda Harian")
 
 plt.grid(axis='y')
 
-# Menambahkan keterangan di bawah setiap batang
-for i, val in enumerate(weather_condition.values):
-    ax.text(i, val + 20, str(val), ha='center', va='bottom')
     
 # Menyimpan gambar Matplotlib ke dalam variabel fig
 st.pyplot()
